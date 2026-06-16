@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <title>Главная страница</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        html, body { height: 100%; }
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1 0 auto; }
+        footer { flex-shrink: 0; }
+    </style>
+</head>
+<body>
+<div th:insert="~{blocks/header :: header}"></div>
+<main>
+    <div class="container mt-5 pt-4">
+
+        <!-- Приветствие -->
+        <div class="mb-4">
+            <!-- Информация о ВУЦ для гостей -->
+            <div class="alert alert-info" sec:authorize="isAnonymous()">
+                <h5>Что такое военный учебный центр?</h5>
+                <p>Центр позволяет студентам приобрести военно-учетную специальность рядового и сержантского состава прямо во время обучения в университете и получить звание сержанта или солдата запаса.</p>
+                <p>Набор в военный учебный центр проходит на конкурсной основе, обучение в нем молодые люди начинают со второго курса очной формы, а срок учебы составляет два года. После окончания курса студенты соберутся на учебные сборы и после выпуска отправятся в запас.</p>
+            </div>
+        </div>
+
+        <!-- Основные разделы -->
+        <!-- Карточка протокола только для USER -->
+        <div sec:authorize="hasAuthority('USER')" class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Протокол конкурсного отбора</h5>
+                        <p class="card-text text-muted">
+                            Формирование списка граждан, прошедших и не прошедших конкурсный отбор.
+                        </p>
+                        <ul class="small text-muted mb-2">
+                            <li>ФИО</li>
+                            <li>Результаты ФП</li>
+                            <li>Итоговый балл</li>
+                            <li>Решение комиссии</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a th:href="@{/contest-protocol}" class="btn btn-primary btn-sm">
+                                Открыть список
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Все карточки только для TECHNOLOGIST и FULL -->
+        <div sec:authorize="hasAnyAuthority('TECHNOLOGIST','FULL')" class="row g-4">
+
+            <!-- Списки и справочники -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Списки и справочники</h5>
+                        <p class="card-text text-muted">
+                            Переход к спискам студентов, специальностей, групп и другим справочникам.
+                        </p>
+                        <div class="mt-auto">
+                            <a th:href="@{/lists}" class="btn btn-primary btn-sm">
+                                Открыть списки
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Подали заявление -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Подали заявление</h5>
+                        <p class="card-text text-muted">
+                            Список всех студентов, подавших заявление на обучение в ВУЦ.
+                        </p>
+                        <ul class="small text-muted mb-2">
+                            <li>ФИО, группа, курс</li>
+                            <li>Дата подачи заявления</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a th:href="@{/student-applied}" class="btn btn-primary btn-sm">
+                                Открыть список
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Физическая подготовка -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Физическая подготовка</h5>
+                        <p class="card-text text-muted">
+                            Табличный отчёт по результатам физподготовки, с суммой баллов и итогом.
+                        </p>
+                        <div class="mt-auto">
+                            <a th:href="@{/physical-list}" class="btn btn-primary btn-sm">
+                                Открыть отчёт
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Отбор и результаты -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Отбор и результаты</h5>
+                        <p class="card-text text-muted">
+                            Студенты с данными по предварительному отбору
+                            и среднему баллу успеваемости.
+                        </p>
+                        <ul class="small text-muted mb-2">
+                            <li>Категория годности</li>
+                            <li>Категория ППО</li>
+                            <li>Средний балл по основному направлению</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a th:href="@{/students/assessment}" class="btn btn-primary btn-sm">
+                                Открыть список
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Протокол конкурсного отбора -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Протокол конкурсного отбора</h5>
+                        <p class="card-text text-muted">
+                            Формирование списка граждан, прошедших и не прошедших конкурсный отбор.
+                        </p>
+                        <ul class="small text-muted mb-2">
+                            <li>ФИО</li>
+                            <li>Результаты ФП</li>
+                            <li>Итоговый балл</li>
+                            <li>Решение комиссии</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a th:href="@{/contest-protocol}" class="btn btn-primary btn-sm">
+                                Открыть список
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Курсанты по взводам -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Курсанты по взводам</h5>
+                        <p class="card-text text-muted">
+                            Распределение курсантов по взводам и курсам обучения.
+                        </p>
+                        <ul class="small text-muted mb-2">
+                            <li>Список взводов (1 взвод, 2 взвод и т.д.)</li>
+                            <li>Перечень курсантов во взводе</li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a th:href="@{/platoons/filter}" class="btn btn-primary btn-sm">
+                                Перейти к взводам
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Администрирование (только для FULL) -->
+            <div class="col-md-4" sec:authorize="hasAuthority('FULL')">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Администрирование</h5>
+                        <p class="card-text text-muted">
+                            Служебные разделы: управление пользователями,
+                            настройками ФП.
+                        </p>
+                        <div class="mt-auto">
+                            <a th:href="@{/admin}" class="btn btn-outline-secondary btn-sm">
+                                Панель администратора
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- /TECH/FULL карточки -->
+
+    </div> <!-- /container -->
+</main>
+<div th:insert="~{blocks/footer :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

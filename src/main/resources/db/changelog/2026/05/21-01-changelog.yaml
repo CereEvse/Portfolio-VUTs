@@ -1,0 +1,1256 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1779356511137-1
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: id_platoon_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-2
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: id_specialty_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-3
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: id_student_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-4
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: mil_acc_spec_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-5
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: mil_comm_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-6
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: military_oath_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-7
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: military_unit_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-8
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: orders_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-9
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: portfolio_achievement_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-10
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: stcp_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-11
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: student_credentials_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-12
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: student_military_grades_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-13
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: student_oath_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-14
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: student_order_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-15
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: study_group_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-16
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: training_camp_period_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-17
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: user_id_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-18
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: user_role_id_seq
+            startValue: 1
+  - changeSet:
+      id: 1779356511137-19
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_exercise
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: number
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: category
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: result_type
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: age_group
+                  type: VARCHAR(20)
+            tableName: exercise
+  - changeSet:
+      id: 1779356511137-20
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_military_accounting_specialty
+                  name: id_military_accounting_specialty
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: code
+                  type: VARCHAR(32)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: title
+                  type: VARCHAR(255)
+            tableName: military_accounting_specialty
+  - changeSet:
+      id: 1779356511137-21
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_military_commissariat
+                  name: id_military_commissariat
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name_military_commissariat
+                  type: VARCHAR(255)
+            tableName: military_commissariat
+  - changeSet:
+      id: 1779356511137-22
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_military_oath
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: oath_date
+                  type: DATE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: military_unit_id
+                  type: BIGINT
+            tableName: military_oath
+  - changeSet:
+      id: 1779356511137-23
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_military_unit
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+            tableName: military_unit
+  - changeSet:
+      id: 1779356511137-24
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_orders
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: order_number
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: order_date
+                  type: DATE
+              - column:
+                  name: issued_by
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: order_type
+                  type: VARCHAR(255)
+            tableName: orders
+  - changeSet:
+      id: 1779356511137-25
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_passport
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: number_passport
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: series_passport
+                  type: VARCHAR(255)
+              - column:
+                  name: place_passport
+                  type: VARCHAR(255)
+              - column:
+                  name: date_passport
+                  type: VARCHAR(255)
+            tableName: passport
+  - changeSet:
+      id: 1779356511137-26
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_physical_norms
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: exercise_id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  name: age_group
+                  type: VARCHAR(255)
+              - column:
+                  name: value
+                  type: DOUBLE
+              - column:
+                  name: points
+                  type: INT
+            tableName: physical_norms
+  - changeSet:
+      id: 1779356511137-27
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_physical_sum_scale
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: sum_points
+                  type: INT
+              - column:
+                  name: age_group
+                  type: VARCHAR(255)
+              - column:
+                  name: scaled_result
+                  type: INT
+            tableName: physical_sum_scale
+  - changeSet:
+      id: 1779356511137-28
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_physical_training
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: student_id
+                  type: BIGINT
+              - column:
+                  name: strength_result
+                  type: INT
+              - column:
+                  name: strength_points
+                  type: INT
+              - column:
+                  name: speed_result
+                  type: DOUBLE
+              - column:
+                  name: speed_points
+                  type: INT
+              - column:
+                  name: endurance_result
+                  type: DOUBLE
+              - column:
+                  name: endurance_points
+                  type: INT
+              - column:
+                  name: total_points
+                  type: INT
+              - column:
+                  name: final_result
+                  type: INT
+              - column:
+                  name: strength_exercise_number
+                  type: INT
+              - column:
+                  name: speed_exercise_number
+                  type: INT
+              - column:
+                  name: endurance_exercise_number
+                  type: INT
+            tableName: physical_training
+  - changeSet:
+      id: 1779356511137-29
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_platoon
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name_platoon
+                  type: VARCHAR(255)
+              - column:
+                  name: specialty_id
+                  type: BIGINT
+            tableName: platoon
+  - changeSet:
+      id: 1779356511137-30
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_portfolio_achievement
+                  name: id_portfolio
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: id_student
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: achievement_date
+                  type: DATE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: description
+                  type: VARCHAR(1000)
+              - column:
+                  name: file_path
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: type
+                  type: VARCHAR(255)
+              - column:
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+            tableName: portfolio_achievement
+  - changeSet:
+      id: 1779356511137-31
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_specialty
+                  name: id_specialty
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: code_specialty
+                  type: VARCHAR(8)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: title_specialty
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: institute
+                  type: VARCHAR(20)
+            tableName: specialty
+  - changeSet:
+      id: 1779356511137-32
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student
+                  name: id_student
+                  type: BIGINT
+              - column:
+                  name: id_user
+                  type: BIGINT
+              - column:
+                  name: photo_path
+                  type: VARCHAR(255)
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: patronymic
+                  type: VARCHAR(255)
+              - column:
+                  name: birthday
+                  type: DATE
+              - column:
+                  name: course
+                  type: INT
+              - column:
+                  name: study_group_id
+                  type: BIGINT
+              - column:
+                  name: military_commissariat_id
+                  type: BIGINT
+              - column:
+                  name: military_accounting_specialty_id
+                  type: BIGINT
+              - column:
+                  name: student_id_card
+                  type: VARCHAR(255)
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
+              - column:
+                  name: note_student
+                  type: VARCHAR(255)
+              - column:
+                  name: passport
+                  type: BIGINT
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: platoon_id
+                  type: BIGINT
+              - column:
+                  name: fitness_category
+                  type: VARCHAR(255)
+              - column:
+                  name: psycho_category
+                  type: VARCHAR(255)
+              - column:
+                  name: grade5
+                  type: DECIMAL(3, 2)
+              - column:
+                  name: grade100
+                  type: DECIMAL(5, 2)
+              - column:
+                  name: application_year
+                  type: INT
+              - column:
+                  name: user_id
+                  type: BIGINT
+            tableName: student
+  - changeSet:
+      id: 1779356511137-33
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student_credentials
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: student_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: login
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: raw_password
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: exported
+                  type: BOOLEAN
+            tableName: student_credentials
+  - changeSet:
+      id: 1779356511137-34
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student_military_grades
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: student_id
+                  type: BIGINT
+              - column:
+                  name: military_technical_grade
+                  type: INT
+              - column:
+                  name: tactical_special_grade
+                  type: INT
+              - column:
+                  name: general_military_grade
+                  type: INT
+              - column:
+                  name: training_camps_grade
+                  type: INT
+              - column:
+                  name: final_certification_grade
+                  type: INT
+            tableName: student_military_grades
+  - changeSet:
+      id: 1779356511137-35
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student_oath
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: student_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: oath_id
+                  type: BIGINT
+            tableName: student_oath
+  - changeSet:
+      id: 1779356511137-36
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student_order
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: student_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: order_id
+                  type: BIGINT
+            tableName: student_order
+  - changeSet:
+      id: 1779356511137-37
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student_training_camp_period
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: student_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: training_camp_period_id
+                  type: BIGINT
+            tableName: student_training_camp_period
+  - changeSet:
+      id: 1779356511137-38
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_study_group
+                  name: id_group
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name_group
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: course
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: specialty_id
+                  type: BIGINT
+            tableName: study_group
+  - changeSet:
+      id: 1779356511137-39
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_training_camp_period
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: start_date
+                  type: DATE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: end_date
+                  type: DATE
+            tableName: training_camp_period
+  - changeSet:
+      id: 1779356511137-40
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_user_roles
+                  name: id_user_role
+                  type: BIGINT
+              - column:
+                  name: user_authority
+                  type: SMALLINT
+              - column:
+                  name: user_id
+                  type: BIGINT
+            tableName: user_roles
+  - changeSet:
+      id: 1779356511137-41
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_users
+                  name: id_user
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: login
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: password
+                  type: VARCHAR(255)
+            tableName: users
+  - changeSet:
+      id: 1779356511137-42
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: student_id, order_id
+            constraintName: uc_2acd4651e80a1f9402ad5995d
+            tableName: student_order
+  - changeSet:
+      id: 1779356511137-43
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: student_id
+            constraintName: uc_9b5b4b22c1e7fb163706a3a6f
+            tableName: student_oath
+  - changeSet:
+      id: 1779356511137-44
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: student_id
+            constraintName: uc_ff2edf751ec46a1b0b4ee43f4
+            tableName: student_training_camp_period
+  - changeSet:
+      id: 1779356511137-45
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: code
+            constraintName: uc_military_accounting_specialty_code
+            tableName: military_accounting_specialty
+  - changeSet:
+      id: 1779356511137-46
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: name_military_commissariat
+            constraintName: uc_military_commissariat_name_military_commissariat
+            tableName: military_commissariat
+  - changeSet:
+      id: 1779356511137-47
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: uc_military_unit_name
+            tableName: military_unit
+  - changeSet:
+      id: 1779356511137-48
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: student_id
+            constraintName: uc_physical_training_student
+            tableName: physical_training
+  - changeSet:
+      id: 1779356511137-49
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: code_specialty
+            constraintName: uc_specialty_codespecialty
+            tableName: specialty
+  - changeSet:
+      id: 1779356511137-50
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: student_id
+            constraintName: uc_student_credentials_student
+            tableName: student_credentials
+  - changeSet:
+      id: 1779356511137-51
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: student_id
+            constraintName: uc_student_military_grades_student
+            tableName: student_military_grades
+  - changeSet:
+      id: 1779356511137-52
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: passport
+            constraintName: uc_student_passport
+            tableName: student
+  - changeSet:
+      id: 1779356511137-53
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: user_id
+            constraintName: uc_student_user
+            tableName: student
+  - changeSet:
+      id: 1779356511137-54
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: name_group
+            constraintName: uc_study_group_name_group
+            tableName: study_group
+  - changeSet:
+      id: 1779356511137-55
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: login
+            constraintName: uc_users_login
+            tableName: users
+  - changeSet:
+      id: 1779356511137-56
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: military_unit_id
+            baseTableName: military_oath
+            constraintName: FK_MILITARY_OATH_ON_MILITARY_UNIT
+            referencedColumnNames: id
+            referencedTableName: military_unit
+  - changeSet:
+      id: 1779356511137-57
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: exercise_id
+            baseTableName: physical_norms
+            constraintName: FK_PHYSICAL_NORMS_ON_EXERCISE
+            referencedColumnNames: id
+            referencedTableName: exercise
+  - changeSet:
+      id: 1779356511137-58
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: student_id
+            baseTableName: physical_training
+            constraintName: FK_PHYSICAL_TRAINING_ON_STUDENT
+            referencedColumnNames: id_student
+            referencedTableName: student
+  - changeSet:
+      id: 1779356511137-59
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: specialty_id
+            baseTableName: platoon
+            constraintName: FK_PLATOON_ON_SPECIALTY
+            referencedColumnNames: id_military_accounting_specialty
+            referencedTableName: military_accounting_specialty
+  - changeSet:
+      id: 1779356511137-60
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_student
+            baseTableName: portfolio_achievement
+            constraintName: FK_PORTFOLIO_ACHIEVEMENT_ON_ID_STUDENT
+            referencedColumnNames: id_student
+            referencedTableName: student
+  - changeSet:
+      id: 1779356511137-61
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: student_id
+            baseTableName: student_credentials
+            constraintName: FK_STUDENT_CREDENTIALS_ON_STUDENT
+            referencedColumnNames: id_student
+            referencedTableName: student
+  - changeSet:
+      id: 1779356511137-62
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: student_id
+            baseTableName: student_military_grades
+            constraintName: FK_STUDENT_MILITARY_GRADES_ON_STUDENT
+            referencedColumnNames: id_student
+            referencedTableName: student
+  - changeSet:
+      id: 1779356511137-63
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: oath_id
+            baseTableName: student_oath
+            constraintName: FK_STUDENT_OATH_ON_OATH
+            referencedColumnNames: id
+            referencedTableName: military_oath
+  - changeSet:
+      id: 1779356511137-64
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: student_id
+            baseTableName: student_oath
+            constraintName: FK_STUDENT_OATH_ON_STUDENT
+            referencedColumnNames: id_student
+            referencedTableName: student
+  - changeSet:
+      id: 1779356511137-65
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: military_accounting_specialty_id
+            baseTableName: student
+            constraintName: FK_STUDENT_ON_MILITARY_ACCOUNTING_SPECIALTY
+            referencedColumnNames: id_military_accounting_specialty
+            referencedTableName: military_accounting_specialty
+  - changeSet:
+      id: 1779356511137-66
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: military_commissariat_id
+            baseTableName: student
+            constraintName: FK_STUDENT_ON_MILITARY_COMMISSARIAT
+            referencedColumnNames: id_military_commissariat
+            referencedTableName: military_commissariat
+  - changeSet:
+      id: 1779356511137-67
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: passport
+            baseTableName: student
+            constraintName: FK_STUDENT_ON_PASSPORT
+            referencedColumnNames: id
+            referencedTableName: passport
+  - changeSet:
+      id: 1779356511137-68
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: platoon_id
+            baseTableName: student
+            constraintName: FK_STUDENT_ON_PLATOON
+            referencedColumnNames: id
+            referencedTableName: platoon
+  - changeSet:
+      id: 1779356511137-69
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: study_group_id
+            baseTableName: student
+            constraintName: FK_STUDENT_ON_STUDY_GROUP
+            referencedColumnNames: id_group
+            referencedTableName: study_group
+  - changeSet:
+      id: 1779356511137-70
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: student
+            constraintName: FK_STUDENT_ON_USER
+            referencedColumnNames: id_user
+            referencedTableName: users
+  - changeSet:
+      id: 1779356511137-71
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: order_id
+            baseTableName: student_order
+            constraintName: FK_STUDENT_ORDER_ON_ORDER
+            referencedColumnNames: id
+            referencedTableName: orders
+  - changeSet:
+      id: 1779356511137-72
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: student_id
+            baseTableName: student_order
+            constraintName: FK_STUDENT_ORDER_ON_STUDENT
+            referencedColumnNames: id_student
+            referencedTableName: student
+  - changeSet:
+      id: 1779356511137-73
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: student_id
+            baseTableName: student_training_camp_period
+            constraintName: FK_STUDENT_TRAINING_CAMP_PERIOD_ON_STUDENT
+            referencedColumnNames: id_student
+            referencedTableName: student
+  - changeSet:
+      id: 1779356511137-74
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: training_camp_period_id
+            baseTableName: student_training_camp_period
+            constraintName: FK_STUDENT_TRAINING_CAMP_PERIOD_ON_TRAINING_CAMP_PERIOD
+            referencedColumnNames: id
+            referencedTableName: training_camp_period
+  - changeSet:
+      id: 1779356511137-75
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: specialty_id
+            baseTableName: study_group
+            constraintName: FK_STUDY_GROUP_ON_SPECIALTY
+            referencedColumnNames: id_specialty
+            referencedTableName: specialty
+  - changeSet:
+      id: 1779356511137-76
+      author: ??????
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_roles
+            constraintName: FK_USER_ROLES_ON_USER
+            referencedColumnNames: id_user
+            referencedTableName: users
+

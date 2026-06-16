@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Портфолио: ' + ${student.lastName} + ' ' + ${student.firstName}">Портфолио студента</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .tab-content { padding-top: 1.5rem; }
+        .table th, .table td { vertical-align: middle; }
+        .file-link { text-decoration: none; }
+        .placeholder { width: 150px; height: 150px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+<div th:insert="~{blocks/header :: header}"></div>
+<div class="container py-4">
+    <!-- Шапка с фото и информацией -->
+    <div class="row mb-4">
+        <div class="col-md-2 text-center">
+            <div class="position-relative d-inline-block">
+                <img th:if="${student.photoPath != null}"
+                     th:src="@{'/api/students/' + ${student.idStudent} + '/photo'}"
+                     class="img-thumbnail"
+                     style="width: 150px; height: 150px; object-fit: cover;" alt="Фото">
+                <div th:unless="${student.photoPath != null}"
+                     class="placeholder">
+                    <i class="bi bi-person" style="font-size: 3rem; color: #aaa;"></i>
+                </div>
+                <div th:if="${isAdmin}" class="position-absolute bottom-0 end-0">
+                    <button class="btn btn-sm btn-light rounded-circle shadow-sm" title="Изменить фото"
+                            onclick="document.getElementById('photoInput').click()">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <input type="file" id="photoInput" accept="image/*" style="display:none"
+                           onchange="uploadPhoto(this.files[0])">
+                </div>
+                <div th:if="${isAdmin and student.photoPath != null}" class="position-absolute top-0 end-0">
+                    <button class="btn btn-sm btn-danger rounded-circle shadow-sm" title="Удалить фото"
+                            onclick="deletePhoto()">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2 th:text="${student.lastName} + ' ' + ${student.firstName} + ' ' + ${student.patronymic}"></h2>
+            <div class="text-muted">
+                <div><b>Год поступления: </b><span th:text="${student.applicationYear}">-</span></div>
+                <div><b>Курс: </b><span th:text="${student.course}">-</span></div>
+                <div><b>Взвод: </b><span th:text="${student.platoon?.namePlatoon}">-</span></div>
+                <div><b>ВУС: </b><span th:text="${student.militaryAccountingSpecialty?.code} + ' - ' +${student.militaryAccountingSpecialty?.title}">-</span></div>
+            </div>
+        </div>
+        <div class="col-md-2 text-md-end">
+            <div class="d-flex justify-content-end gap-2">
+                <a href="/" class="btn btn-outline-secondary btn-sm">Назад</a>
+                <a th:if="${isAdmin}" th:href="@{/student-applied/{id}/edit(id=${student.idStudent})}"
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil-square"></i> Редактировать
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Сообщение для не-курсантов -->
+    <div th:if="${portfolioDisabled}" class="alert alert-warning">
+        <h4><i class="bi bi-exclamation-triangle"></i> Портфолио недоступно</h4>
+        <p>Портфолио доступно только для зачисленных студентов (статус «Курсант»).</p>
+        <a href="/" class="btn btn-outline-secondary">← Назад</a>
+    </div>
+
+    <!-- Основное содержимое -->
+    <div th:if="${!portfolioDisabled}">
+        <div id="alertContainer"></div>
+
+        <!-- Вкладки -->
+        <ul class="nav nav-tabs" id="portfolioTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" role="tab">Информация</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="educational-tab" data-bs-toggle="tab" data-bs-target="#educational" role="tab">Учебные</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="sports-tab" data-bs-toggle="tab" data-bs-target="#sports" role="tab">Спортивные</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="scientific-tab" data-bs-toggle="tab" data-bs-target="#scientific" role="tab">Научные</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="other-tab" data-bs-toggle="tab" data-bs-target="#other" role="tab">Иные</button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Вкладка "Информация" -->
+            <div class="tab-pane fade show active" id="info" role="tabpanel">
+                <div class="text-muted mb-4">
+                    <div><b>Факультет: </b> <span th:text="${student.groupStudent?.specialty?.institute}">-</span></div>
+                    <div><b>Группа: </b><span th:text="${student.groupStudent?.nameGroup}">-</span></div>
+                    <div><b>Направление: </b><span th:text="${student.groupStudent?.specialty?.codeSpecialty} + ' - ' + ${student.groupStudent?.specialty?.titleSpecialty}">-</span></div>
+                    <div><b>Категория годности: </b><span th:text="${student.fitnessCategory}">-</span></div>
+                    <div><b>Категория профессионального психологического отбора: </b><span th:text="${student.psychoCategory}">-</span></div>
+                    <div><b>Военный комиссариат: </b><span th:text="${student.militaryCommissariat?.name}">-</span></div>
+                </div>
+                <h5>Военные данные</h5>
+                <div id="militaryDetailsContainer"></div>
+            </div>
+
+            <!-- Вкладка "Учебные" -->
+            <div class="tab-pane fade" id="educational" role="tabpanel">
+                <!-- Оценки -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">Оценки по модулям</h5>
+                        <button th:if="${isAdmin}" class="btn btn-outline-primary btn-sm" onclick="openGradesModal()">
+                            <i class="bi bi-pencil"></i> Редактировать
+                        </button>
+                    </div>
+                    <div id="militaryGradesContainer"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Учебные достижения</h5>
+                    <button th:if="${isAdmin}" class="btn btn-primary btn-sm" onclick="openCreateModal('EDUCATIONAL')">
+                        <i class="bi bi-plus-circle"></i> Добавить
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                        <tr><th>Дата</th><th>Описание</th><th>Файл</th><th th:if="${isAdmin}">Действия</th></tr>
+                        </thead>
+                        <tbody id="educational-tbody"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Спорт -->
+            <div class="tab-pane fade" id="sports" role="tabpanel">
+                <h5 class="mb-3">Физическая подготовка</h5>
+                <div th:if="${student.physicalTraining != null}">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Категория</th>
+                            <th>Упражнение</th>
+                            <th>Результат</th>
+                            <th>Баллы</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Сила</td>
+                            <td th:text="${student.physicalTraining.strengthExerciseNumber}"></td>
+                            <td th:text="${student.strengthResultDisplay} + ' раз'"></td>
+                            <td th:text="${student.physicalTraining.strengthPoints}"></td>
+                        </tr>
+                        <tr>
+                            <td>Быстрота</td>
+                            <td th:text="${student.physicalTraining.speedExerciseNumber}"></td>
+                            <td th:text="${student.speedResultDisplay} + ' сек.' "></td>
+                            <td th:text="${student.physicalTraining.speedPoints}"></td>
+                        </tr>
+                        <tr>
+                            <td>Выносливость</td>
+                            <td th:text="${student.physicalTraining.enduranceExerciseNumber}"></td>
+                            <td th:text="${student.enduranceResultDisplay} + ' сек.'"></td>
+                            <td th:text="${student.physicalTraining.endurancePoints}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:unless="${student.physicalTraining != null}">
+                    <p class="text-muted">Нет данных о физической подготовке</p>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Спортивные достижения</h5>
+                    <button th:if="${isAdmin}" class="btn btn-primary btn-sm" onclick="openCreateModal('SPORTS')">
+                        <i class="bi bi-plus-circle"></i> Добавить
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                        <tr><th>Дата</th><th>Описание</th><th>Файл</th><th th:if="${isAdmin}">Действия</th></tr>
+                        </thead>
+                        <tbody id="sports-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Наука -->
+            <div class="tab-pane fade" id="scientific" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Научные достижения</h5>
+                    <button th:if="${isAdmin}" class="btn btn-primary btn-sm" onclick="openCreateModal('SCIENTIFIC')">
+                        <i class="bi bi-plus-circle"></i> Добавить
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                        <tr><th>Дата</th><th>Описание</th><th>Файл</th><th th:if="${isAdmin}">Действия</th></tr>
+                        </thead>
+                        <tbody id="scientific-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Иные -->
+            <div class="tab-pane fade" id="other" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Иные достижения</h5>
+                    <button th:if="${isAdmin}" class="btn btn-primary btn-sm" onclick="openCreateModal('OTHER')">
+                        <i class="bi bi-plus-circle"></i> Добавить
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                        <tr><th>Дата</th><th>Описание</th><th>Файл</th><th th:if="${isAdmin}">Действия</th></tr>
+                        </thead>
+                        <tbody id="other-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== МОДАЛЬНЫЕ ОКНА ==================== -->
+
+<!-- Модальное окно достижения (без изменений) -->
+<div class="modal fade" id="achievementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="achievementForm" enctype="multipart/form-data">
+                <input type="hidden" id="achievementId" name="id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Добавить достижение</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Тип *</label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="EDUCATIONAL">Учебное</option>
+                            <option value="SPORTS">Спортивное</option>
+                            <option value="SCIENTIFIC">Научное</option>
+                            <option value="OTHER">Иное</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="achievementDate" class="form-label">Дата *</label>
+                        <input type="date" class="form-control" id="achievementDate" name="achievementDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Описание *</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Файл</label>
+                        <input type="file" class="form-control" id="file" name="file">
+                        <small class="text-muted">Текущий файл: <span id="currentFileLabel">нет</span></small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно оценок (без изменений) -->
+<div class="modal fade" id="gradesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="gradesForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать оценки</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="militaryTechnicalGrade" class="form-label">Военно-техническая подготовка</label>
+                        <input type="number" class="form-control" id="militaryTechnicalGrade" min="2" max="5">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tacticalSpecialGrade" class="form-label">Тактическая подготовка</label>
+                        <input type="number" class="form-control" id="tacticalSpecialGrade" min="2" max="5">
+                    </div>
+                    <div class="mb-3">
+                        <label for="generalMilitaryGrade" class="form-label">Общевоенная подготовка</label>
+                        <input type="number" class="form-control" id="generalMilitaryGrade" min="2" max="5">
+                    </div>
+                    <div class="mb-3">
+                        <label for="trainingCampsGrade" class="form-label">Учебные сборы</label>
+                        <input type="number" class="form-control" id="trainingCampsGrade" min="2" max="5">
+                    </div>
+                    <div class="mb-3">
+                        <label for="finalCertificationGrade" class="form-label">Итоговая аттестация</label>
+                        <input type="number" class="form-control" id="finalCertificationGrade" min="2" max="5">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно приказа (новое: выбор создание/существующий, скрытие issuedBy для допуска) -->
+<div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="orderForm">
+                <input type="hidden" id="orderModalType">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalTitle">Приказ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Способ выбора</label>
+                        <select class="form-select" id="orderSelectMode" onchange="toggleOrderMode()">
+                            <option value="new">Создать новый</option>
+                            <option value="existing">Выбрать из существующих</option>
+                        </select>
+                    </div>
+                    <div id="orderExistingBlock" style="display:none;">
+                        <label class="form-label">Существующий приказ</label>
+                        <select class="form-select" id="existingOrderSelect"></select>
+                    </div>
+                    <div id="orderNewBlock">
+                        <div class="mb-3">
+                            <label for="orderNumber" class="form-label">Номер</label>
+                            <input type="text" class="form-control" id="orderNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="orderDate" class="form-label">Дата</label>
+                            <input type="date" class="form-control" id="orderDate">
+                        </div>
+                        <div class="mb-3" id="issuedByBlock" style="display:none;">
+                            <label for="issuedBy" class="form-label">Кем издан</label>
+                            <input type="text" class="form-control" id="issuedBy">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно присяги (выбор создание/существующий, кнопка добавления воинской части) -->
+<div class="modal fade" id="oathModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="oathForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Присяга</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Способ выбора</label>
+                        <select class="form-select" id="oathSelectMode" onchange="toggleOathMode()">
+                            <option value="new">Создать новую</option>
+                            <option value="existing">Выбрать из существующих</option>
+                        </select>
+                    </div>
+                    <div id="oathExistingBlock" style="display:none;">
+                        <label class="form-label">Существующая присяга</label>
+                        <select class="form-select" id="existingOathSelect"></select>
+                    </div>
+                    <div id="oathNewBlock">
+                        <div class="mb-3">
+                            <label for="oathDate" class="form-label">Дата принятия</label>
+                            <input type="date" class="form-control" id="oathDate">
+                        </div>
+                        <div class="mb-3">
+                            <label for="militaryUnitId" class="form-label">Воинская часть</label>
+                            <div class="input-group">
+                                <select class="form-select" id="militaryUnitId"></select>
+                                <button class="btn btn-outline-secondary" type="button" onclick="addMilitaryUnit()" title="Добавить часть">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно учебных сборов (выбор создание/существующий) -->
+<div class="modal fade" id="trainingCampModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="trainingCampForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Учебные сборы</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Способ выбора</label>
+                        <select class="form-select" id="trainingCampSelectMode" onchange="toggleTrainingCampMode()">
+                            <option value="new">Создать новый период</option>
+                            <option value="existing">Выбрать из существующих</option>
+                        </select>
+                    </div>
+                    <div id="trainingCampExistingBlock" style="display:none;">
+                        <label class="form-label">Существующий период</label>
+                        <select class="form-select" id="existingTrainingCampSelect"></select>
+                    </div>
+                    <div id="trainingCampNewBlock">
+                        <div class="mb-3">
+                            <label for="campStartDate" class="form-label">Дата начала</label>
+                            <input type="date" class="form-control" id="campStartDate">
+                        </div>
+                        <div class="mb-3">
+                            <label for="campEndDate" class="form-label">Дата окончания</label>
+                            <input type="date" class="form-control" id="campEndDate">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:insert="~{blocks/footer :: footer}"></div>
+<!-- Bootstrap JS и основной скрипт будут далее -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Основной скрипт -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const STUDENT_ID = /*[[${student.idStudent}]]*/ 0;
+    const IS_ADMIN = /*[[${isAdmin}]]*/ false;
+    const API_BASE = '/api';
+
+    let achievements = [];
+    let militaryDetails = {};
+
+    let modal, gradesModal, orderModal, oathModal, trainingCampModal;
+    let currentAchievement = null;
+
+    const typeConfig = {
+        'EDUCATIONAL': { tbody: 'educational-tbody', label: 'Учебные' },
+        'SPORTS': { tbody: 'sports-tbody', label: 'Спортивные' },
+        'SCIENTIFIC': { tbody: 'scientific-tbody', label: 'Научные' },
+        'OTHER': { tbody: 'other-tbody', label: 'Иные' }
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        modal = new bootstrap.Modal(document.getElementById('achievementModal'));
+        gradesModal = new bootstrap.Modal(document.getElementById('gradesModal'));
+        orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
+        oathModal = new bootstrap.Modal(document.getElementById('oathModal'));
+        trainingCampModal = new bootstrap.Modal(document.getElementById('trainingCampModal'));
+
+        loadAchievements();
+        loadMilitaryGrades();
+        loadMilitaryDetails();
+
+        document.getElementById('achievementForm').addEventListener('submit', e => {
+            e.preventDefault();
+            saveAchievement();
+        });
+        document.getElementById('gradesForm').addEventListener('submit', e => {
+            e.preventDefault();
+            saveMilitaryGrades();
+        });
+        document.getElementById('orderForm').addEventListener('submit', e => {
+            e.preventDefault();
+            saveOrder();
+        });
+        document.getElementById('oathForm').addEventListener('submit', e => {
+            e.preventDefault();
+            saveOath();
+        });
+        document.getElementById('trainingCampForm').addEventListener('submit', e => {
+            e.preventDefault();
+            saveTrainingCamp();
+        });
+    });
+
+    // ----------------------- ДОСТИЖЕНИЯ ----------------------------
+    async function loadAchievements() {
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/achievements`);
+            if (!resp.ok) throw new Error('Ошибка загрузки');
+            achievements = await resp.json();
+            renderAllTables();
+        } catch (e) {
+            showAlert('danger', 'Не удалось загрузить достижения: ' + e.message);
+        }
+    }
+
+    function renderAllTables() {
+        for (let type in typeConfig) {
+            document.getElementById(typeConfig[type].tbody).innerHTML = '';
+        }
+        const grouped = { EDUCATIONAL: [], SPORTS: [], SCIENTIFIC: [], OTHER: [] };
+        achievements.forEach(ach => {
+            if (grouped[ach.type]) grouped[ach.type].push(ach);
+        });
+        for (let type in grouped) {
+            const tbody = document.getElementById(typeConfig[type].tbody);
+            const list = grouped[type].sort((a, b) => new Date(b.achievementDate) - new Date(a.achievementDate));
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${IS_ADMIN ? 4 : 3}" class="text-center text-muted">Нет достижений</td></tr>`;
+            } else {
+                list.forEach(ach => tbody.appendChild(createAchievementRow(ach)));
+            }
+        }
+    }
+
+    function createAchievementRow(ach) {
+        const tr = document.createElement('tr');
+        const tdDate = document.createElement('td');
+        tdDate.textContent = formatDate(ach.achievementDate);
+        tr.appendChild(tdDate);
+
+        const tdDesc = document.createElement('td');
+        tdDesc.textContent = ach.description;
+        tr.appendChild(tdDesc);
+
+        const tdFile = document.createElement('td');
+        if (ach.hasFile) {
+            tdFile.innerHTML = `<a href="${API_BASE}/achievements/${ach.id}/file" class="file-link" target="_blank"><i class="bi bi-paperclip"></i> Скачать</a>`;
+        } else {
+            tdFile.innerHTML = '<span class="text-muted"><i class="bi bi-file-earmark-x"></i> Нет</span>';
+        }
+        tr.appendChild(tdFile);
+
+        if (IS_ADMIN) {
+            const tdActions = document.createElement('td');
+            tdActions.innerHTML = `
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-secondary" onclick="editAchievement(${ach.id})"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-outline-danger" onclick="deleteAchievement(${ach.id})"><i class="bi bi-trash"></i></button>
+                </div>`;
+            tr.appendChild(tdActions);
+        }
+        return tr;
+    }
+
+    function openCreateModal(type) {
+        if (!IS_ADMIN) return;
+        currentAchievement = null;
+        document.getElementById('modalTitle').textContent = 'Добавить достижение';
+        document.getElementById('achievementId').value = '';
+        document.getElementById('type').value = type;
+        document.getElementById('achievementDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('description').value = '';
+        document.getElementById('file').value = '';
+        document.getElementById('currentFileLabel').textContent = 'нет';
+        modal.show();
+    }
+
+    async function editAchievement(id) {
+        if (!IS_ADMIN) return;
+        try {
+            const resp = await fetch(`${API_BASE}/achievements/${id}`);
+            if (!resp.ok) throw new Error('Достижение не найдено');
+            const ach = await resp.json();
+            currentAchievement = ach;
+
+            document.getElementById('modalTitle').textContent = 'Редактировать достижение';
+            document.getElementById('achievementId').value = ach.id;
+            document.getElementById('type').value = ach.type;
+            document.getElementById('achievementDate').value = ach.achievementDate;
+            document.getElementById('description').value = ach.description;
+            document.getElementById('file').value = '';
+            document.getElementById('currentFileLabel').textContent = ach.hasFile ? 'есть файл' : 'нет';
+            modal.show();
+        } catch (e) {
+            showAlert('danger', 'Ошибка: ' + e.message);
+        }
+    }
+
+    async function saveAchievement() {
+        if (!IS_ADMIN) return;
+        const form = document.getElementById('achievementForm');
+        const formData = new FormData(form);
+        const id = formData.get('id');
+        const url = id ? `${API_BASE}/achievements/${id}` : `${API_BASE}/students/${STUDENT_ID}/achievements`;
+        const method = id ? 'PUT' : 'POST';
+        try {
+            const resp = await fetch(url, { method, body: formData });
+            if (!resp.ok) {
+                const text = await resp.text();
+                throw new Error(text || 'Ошибка сохранения');
+            }
+            modal.hide();
+            showAlert('success', id ? 'Достижение обновлено' : 'Достижение добавлено');
+            await loadAchievements();
+        } catch (e) {
+            showAlert('danger', 'Ошибка: ' + e.message);
+        }
+    }
+
+    async function deleteAchievement(id) {
+        if (!IS_ADMIN) return;
+        if (!confirm('Удалить это достижение?')) return;
+        try {
+            const resp = await fetch(`${API_BASE}/achievements/${id}`, { method: 'DELETE' });
+            if (!resp.ok) throw new Error('Ошибка удаления');
+            showAlert('success', 'Достижение удалено');
+            await loadAchievements();
+        } catch (e) {
+            showAlert('danger', 'Ошибка: ' + e.message);
+        }
+    }
+
+    window.openCreateModal = openCreateModal;
+    window.editAchievement = editAchievement;
+    window.deleteAchievement = deleteAchievement;
+
+    // ----------------------- ОЦЕНКИ ----------------------------
+    async function loadMilitaryGrades() {
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/military-grades`);
+            if (!resp.ok) throw new Error('Ошибка загрузки оценок');
+            const grades = await resp.json();
+            renderMilitaryGrades(grades);
+        } catch (e) {
+            showAlert('danger', 'Не удалось загрузить оценки: ' + e.message);
+        }
+    }
+
+    function renderMilitaryGrades(grades) {
+        const container = document.getElementById('militaryGradesContainer');
+        const modules = [
+            { key: 'militaryTechnicalGrade', label: 'Военно-техническая подготовка' },
+            { key: 'tacticalSpecialGrade', label: 'Тактическая и тактико-специальная подготовка' },
+            { key: 'generalMilitaryGrade', label: 'Общевоенная подготовка' },
+            { key: 'trainingCampsGrade', label: 'Учебные сборы' },
+            { key: 'finalCertificationGrade', label: 'Итоговая аттестация' }
+        ];
+        let html = '<table class="table table-bordered"><tbody>';
+        modules.forEach(m => {
+            const value = grades[m.key] != null ? grades[m.key] : '—';
+            html += `<tr><td style="width:60%">${m.label}</td><td>${value}</td></tr>`;
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    async function openGradesModal() {
+        if (!IS_ADMIN) return;
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/military-grades`);
+            if (!resp.ok) throw new Error('Ошибка загрузки');
+            const grades = await resp.json();
+            document.getElementById('militaryTechnicalGrade').value = grades.militaryTechnicalGrade || '';
+            document.getElementById('tacticalSpecialGrade').value = grades.tacticalSpecialGrade || '';
+            document.getElementById('generalMilitaryGrade').value = grades.generalMilitaryGrade || '';
+            document.getElementById('trainingCampsGrade').value = grades.trainingCampsGrade || '';
+            document.getElementById('finalCertificationGrade').value = grades.finalCertificationGrade || '';
+            gradesModal.show();
+        } catch (e) {
+            showAlert('danger', 'Ошибка: ' + e.message);
+        }
+    }
+
+    async function saveMilitaryGrades() {
+        const form = document.getElementById('gradesForm');
+        const grades = {
+            militaryTechnicalGrade: parseInt(form.militaryTechnicalGrade.value) || null,
+            tacticalSpecialGrade: parseInt(form.tacticalSpecialGrade.value) || null,
+            generalMilitaryGrade: parseInt(form.generalMilitaryGrade.value) || null,
+            trainingCampsGrade: parseInt(form.trainingCampsGrade.value) || null,
+            finalCertificationGrade: parseInt(form.finalCertificationGrade.value) || null
+        };
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/military-grades`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(grades)
+            });
+            if (!resp.ok) throw new Error('Ошибка сохранения');
+            gradesModal.hide();
+            showAlert('success', 'Оценки сохранены');
+            loadMilitaryGrades();
+        } catch (e) {
+            showAlert('danger', 'Ошибка: ' + e.message);
+        }
+    }
+
+    window.openGradesModal = openGradesModal;
+
+    // ----------------------- ВОЕННЫЕ ДАННЫЕ ----------------------------
+    async function loadMilitaryDetails() {
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/military-details`);
+            if (!resp.ok) throw new Error('Ошибка загрузки военных данных');
+            militaryDetails = await resp.json();
+            renderMilitaryDetails();
+        } catch (e) {
+            showAlert('danger', e.message);
+        }
+    }
+
+    function renderMilitaryDetails() {
+        const container = document.getElementById('militaryDetailsContainer');
+        let html = '';
+
+        // Приказ о допуске
+        html += renderDetailBlock(
+            'Приказ о допуске к военной подготовке',
+            militaryDetails.admissionOrder
+                ? `Номер: ${militaryDetails.admissionOrder.orderNumber}, от ${formatDate(militaryDetails.admissionOrder.orderDate)}`
+                : 'Не указан',
+            'admissionOrder'
+        );
+        // Приказ о присвоении звания
+        html += renderDetailBlock(
+            'Приказ о присвоении воинского звания',
+            militaryDetails.rankAssignmentOrder
+                ? `Номер: ${militaryDetails.rankAssignmentOrder.orderNumber}, от ${formatDate(militaryDetails.rankAssignmentOrder.orderDate)}, издан: ${militaryDetails.rankAssignmentOrder.issuedBy || ''}`
+                : 'Не указан',
+            'rankOrder'
+        );
+        // Присяга
+        html += renderDetailBlock(
+            'Дата принятия присяги',
+            militaryDetails.oath
+                ? `${formatDate(militaryDetails.oath.oathDate)}, войсковая часть: ${militaryDetails.oath.militaryUnitName || ''}`
+                : 'Не указана',
+            'oath'
+        );
+        // Учебные сборы
+        html += renderDetailBlock(
+            'Учебные сборы',
+            militaryDetails.trainingCampPeriod
+                ? `с ${formatDate(militaryDetails.trainingCampPeriod.startDate)} по ${formatDate(militaryDetails.trainingCampPeriod.endDate)}`
+                : 'Не указаны',
+            'trainingCamp'
+        );
+        container.innerHTML = html;
+    }
+
+    function renderDetailBlock(title, value, type) {
+        return `
+            <div class="border rounded p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div><strong>${title}</strong></div>
+                    ${IS_ADMIN ? `<button class="btn btn-sm btn-outline-secondary" onclick="openEditModal('${type}')"><i class="bi bi-pencil"></i></button>` : ''}
+                </div>
+                <div class="mt-1">${value}</div>
+            </div>`;
+    }
+
+    function openEditModal(type) {
+        if (!IS_ADMIN) return;
+        switch (type) {
+            case 'admissionOrder':
+                document.getElementById('orderModalTitle').textContent = 'Приказ о допуске';
+                document.getElementById('orderModalType').value = 'admission';
+                document.getElementById('orderSelectMode').value = 'new'; // по умолчанию создание
+                toggleOrderMode();
+                document.getElementById('orderNumber').value = militaryDetails.admissionOrder?.orderNumber || '';
+                document.getElementById('orderDate').value = militaryDetails.admissionOrder?.orderDate || '';
+                document.getElementById('issuedBy').value = militaryDetails.admissionOrder?.issuedBy || '';
+                loadAdmissionOrders(militaryDetails.admissionOrder?.id);
+                orderModal.show();
+                break;
+            case 'rankOrder':
+                document.getElementById('orderModalTitle').textContent = 'Приказ о присвоении звания';
+                document.getElementById('orderModalType').value = 'rank';
+                document.getElementById('orderSelectMode').value = 'new';
+                toggleOrderMode();
+                document.getElementById('orderNumber').value = militaryDetails.rankAssignmentOrder?.orderNumber || '';
+                document.getElementById('orderDate').value = militaryDetails.rankAssignmentOrder?.orderDate || '';
+                document.getElementById('issuedBy').value = militaryDetails.rankAssignmentOrder?.issuedBy || '';
+                loadRankAssignmentOrders(militaryDetails.rankAssignmentOrder?.id);
+                orderModal.show();
+                break;
+            case 'oath':
+                document.getElementById('oathSelectMode').value = 'new';
+                toggleOathMode();
+                document.getElementById('oathDate').value = militaryDetails.oath?.oathDate || '';
+                loadMilitaryUnitsForOath(militaryDetails.oath?.militaryUnitId);
+                loadOathsForSelect(militaryDetails.oath?.id);
+                oathModal.show();
+                break;
+            case 'trainingCamp':
+                document.getElementById('trainingCampSelectMode').value = 'new';
+                toggleTrainingCampMode();
+                document.getElementById('campStartDate').value = militaryDetails.trainingCampPeriod?.startDate || '';
+                document.getElementById('campEndDate').value = militaryDetails.trainingCampPeriod?.endDate || '';
+                loadTrainingCampPeriods(militaryDetails.trainingCampPeriod?.id);
+                trainingCampModal.show();
+                break;
+        }
+    }
+
+    // Режимы выбора в модальных окнах
+    function toggleOrderMode() {
+        const mode = document.getElementById('orderSelectMode').value;
+        const isNew = mode === 'new';
+        document.getElementById('orderNewBlock').style.display = isNew ? 'block' : 'none';
+        document.getElementById('orderExistingBlock').style.display = isNew ? 'none' : 'block';
+
+        // Поле "Кем издан" показываем только для приказа о звании и в режиме создания
+        const type = document.getElementById('orderModalType').value;
+        const issuedByBlock = document.getElementById('issuedByBlock');
+        if (isNew && type === 'rank') {
+            issuedByBlock.style.display = 'block';
+        } else {
+            issuedByBlock.style.display = 'none';
+        }
+    }
+
+    function toggleOathMode() {
+        const mode = document.getElementById('oathSelectMode').value;
+        document.getElementById('oathNewBlock').style.display = mode === 'new' ? 'block' : 'none';
+        document.getElementById('oathExistingBlock').style.display = mode === 'existing' ? 'block' : 'none';
+    }
+
+    function toggleTrainingCampMode() {
+        const mode = document.getElementById('trainingCampSelectMode').value;
+        document.getElementById('trainingCampNewBlock').style.display = mode === 'new' ? 'block' : 'none';
+        document.getElementById('trainingCampExistingBlock').style.display = mode === 'existing' ? 'block' : 'none';
+    }
+
+    // Загрузка списков для выбора
+    async function loadAdmissionOrders(selectedId) {
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/military-details/admission-orders`);
+            const orders = await resp.json();
+            const select = document.getElementById('existingOrderSelect');
+            select.innerHTML = '';
+            orders.forEach(o => {
+                const opt = document.createElement('option');
+                opt.value = o.id;
+                opt.text = `№${o.orderNumber} от ${formatDate(o.orderDate)}`;
+                if (o.id == selectedId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        } catch (e) {
+            showAlert('danger', 'Ошибка загрузки приказов: ' + e.message);
+        }
+    }
+
+    async function loadRankAssignmentOrders(selectedId) {
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/military-details/rank-assignment-orders`);
+            const orders = await resp.json();
+            const select = document.getElementById('existingOrderSelect');
+            select.innerHTML = '';
+            orders.forEach(o => {
+                const opt = document.createElement('option');
+                opt.value = o.id;
+                opt.text = `№${o.orderNumber} от ${formatDate(o.orderDate)} (${o.issuedBy || ''})`;
+                if (o.id == selectedId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        } catch (e) {
+            showAlert('danger', 'Ошибка загрузки приказов: ' + e.message);
+        }
+    }
+
+    async function loadOathsForSelect(selectedId) {
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/military-details/oaths`);
+            const oaths = await resp.json();
+            const select = document.getElementById('existingOathSelect');
+            select.innerHTML = '';
+            oaths.forEach(o => {
+                const opt = document.createElement('option');
+                opt.value = o.id;
+                opt.text = `${formatDate(o.oathDate)} - ${o.militaryUnitName}`;
+                if (o.id == selectedId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        } catch (e) {
+            showAlert('danger', 'Ошибка загрузки присяг: ' + e.message);
+        }
+    }
+
+    async function loadTrainingCampPeriods(selectedId) {
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/military-details/training-camp-periods`);
+            const periods = await resp.json();
+            const select = document.getElementById('existingTrainingCampSelect');
+            select.innerHTML = '';
+            periods.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.text = `с ${formatDate(p.startDate)} по ${formatDate(p.endDate)}`;
+                if (p.id == selectedId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        } catch (e) {
+            showAlert('danger', 'Ошибка загрузки периодов: ' + e.message);
+        }
+    }
+
+    async function loadMilitaryUnitsForOath(selectedUnitId) {
+        try {
+            const resp = await fetch(`${API_BASE}/military-units`);
+            const units = await resp.json();
+            const select = document.getElementById('militaryUnitId');
+            select.innerHTML = '';
+            units.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.text = u.name;
+                if (u.id == selectedUnitId) opt.selected = true;
+                select.appendChild(opt);
+            });
+        } catch (e) {
+            showAlert('danger', 'Ошибка загрузки воинских частей: ' + e.message);
+        }
+    }
+
+    // Сохранение приказа
+    async function saveOrder() {
+        const type = document.getElementById('orderModalType').value;
+        const mode = document.getElementById('orderSelectMode').value;
+        const baseUrl = `${API_BASE}/students/${STUDENT_ID}/military-details`;
+
+        if (mode === 'existing') {
+            const orderId = document.getElementById('existingOrderSelect').value;
+            if (!orderId) return;
+            const url = type === 'admission' ? `${baseUrl}/admission-order/existing` : `${baseUrl}/rank-assignment-order/existing`;
+            const params = new URLSearchParams();
+            params.append('orderId', orderId);
+            try {
+                const resp = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                if (!resp.ok) throw new Error('Ошибка сохранения');
+                orderModal.hide();
+                showAlert('success', 'Приказ сохранён');
+                loadMilitaryDetails();
+            } catch (e) {
+                showAlert('danger', 'Ошибка: ' + e.message);
+            }
+        } else {
+            const orderNumber = document.getElementById('orderNumber').value;
+            const orderDate = document.getElementById('orderDate').value;
+            const issuedBy = document.getElementById('issuedBy').value;
+            if (!orderNumber || !orderDate) {
+                showAlert('warning', 'Заполните номер и дату');
+                return;
+            }
+            const params = new URLSearchParams();
+            params.append('orderNumber', orderNumber);
+            params.append('orderDate', orderDate);
+            if (type === 'rank') {
+                params.append('issuedBy', issuedBy);
+            }
+            const url = type === 'admission' ? `${baseUrl}/admission-order` : `${baseUrl}/rank-assignment-order`;
+            try {
+                const resp = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                if (!resp.ok) throw new Error('Ошибка сохранения');
+                orderModal.hide();
+                showAlert('success', 'Приказ сохранён');
+                loadMilitaryDetails();
+            } catch (e) {
+                showAlert('danger', 'Ошибка: ' + e.message);
+            }
+        }
+    }
+
+    // Сохранение присяги
+    async function saveOath() {
+        const mode = document.getElementById('oathSelectMode').value;
+        const baseUrl = `${API_BASE}/students/${STUDENT_ID}/military-details/oath`;
+        if (mode === 'existing') {
+            const oathId = document.getElementById('existingOathSelect').value;
+            if (!oathId) return;
+            const params = new URLSearchParams();
+            params.append('oathId', oathId);
+            try {
+                const resp = await fetch(`${baseUrl}/existing`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                if (!resp.ok) throw new Error('Ошибка сохранения');
+                oathModal.hide();
+                showAlert('success', 'Присяга сохранена');
+                loadMilitaryDetails();
+            } catch (e) {
+                showAlert('danger', 'Ошибка: ' + e.message);
+            }
+        } else {
+            const oathDate = document.getElementById('oathDate').value;
+            const militaryUnitId = document.getElementById('militaryUnitId').value;
+            if (!oathDate || !militaryUnitId) {
+                showAlert('warning', 'Заполните дату и выберите часть');
+                return;
+            }
+            const params = new URLSearchParams();
+            params.append('oathDate', oathDate);
+            params.append('militaryUnitId', militaryUnitId);
+            try {
+                const resp = await fetch(baseUrl, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                if (!resp.ok) throw new Error('Ошибка сохранения');
+                oathModal.hide();
+                showAlert('success', 'Присяга сохранена');
+                loadMilitaryDetails();
+            } catch (e) {
+                showAlert('danger', 'Ошибка: ' + e.message);
+            }
+        }
+    }
+
+    // Сохранение учебных сборов
+    async function saveTrainingCamp() {
+        const mode = document.getElementById('trainingCampSelectMode').value;
+        const baseUrl = `${API_BASE}/students/${STUDENT_ID}/military-details/training-camps`;
+        if (mode === 'existing') {
+            const periodId = document.getElementById('existingTrainingCampSelect').value;
+            if (!periodId) return;
+            const params = new URLSearchParams();
+            params.append('periodId', periodId);
+            try {
+                const resp = await fetch(`${baseUrl}/existing`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                if (!resp.ok) throw new Error('Ошибка сохранения');
+                trainingCampModal.hide();
+                showAlert('success', 'Учебные сборы сохранены');
+                loadMilitaryDetails();
+            } catch (e) {
+                showAlert('danger', 'Ошибка: ' + e.message);
+            }
+        } else {
+            const startDate = document.getElementById('campStartDate').value;
+            const endDate = document.getElementById('campEndDate').value;
+            if (!startDate || !endDate) {
+                showAlert('warning', 'Заполните даты');
+                return;
+            }
+            const params = new URLSearchParams();
+            params.append('startDate', startDate);
+            params.append('endDate', endDate);
+            try {
+                const resp = await fetch(baseUrl, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                if (!resp.ok) throw new Error('Ошибка сохранения');
+                trainingCampModal.hide();
+                showAlert('success', 'Учебные сборы сохранены');
+                loadMilitaryDetails();
+            } catch (e) {
+                showAlert('danger', 'Ошибка: ' + e.message);
+            }
+        }
+    }
+
+    // Добавление воинской части
+    async function addMilitaryUnit() {
+        const name = prompt('Введите название воинской части:');
+        if (!name || !name.trim()) return;
+        try {
+            const resp = await fetch(`${API_BASE}/military-units`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: name.trim()
+            });
+            if (!resp.ok) {
+                const text = await resp.text();
+                throw new Error(text || 'Ошибка создания');
+            }
+            const newUnit = await resp.json();
+            // Добавляем в выпадающий список и выбираем
+            const select = document.getElementById('militaryUnitId');
+            const opt = document.createElement('option');
+            opt.value = newUnit.id;
+            opt.text = newUnit.name;
+            select.appendChild(opt);
+            select.value = newUnit.id;
+            showAlert('success', 'Воинская часть добавлена');
+        } catch (e) {
+            showAlert('danger', 'Ошибка: ' + e.message);
+        }
+    }
+
+    window.openEditModal = openEditModal;
+    window.addMilitaryUnit = addMilitaryUnit;
+
+    // ----------------------- ФОТО ----------------------------
+    async function uploadPhoto(file) {
+        if (!file) return;
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/photo`, {
+                method: 'POST',
+                body: formData
+            });
+            if (resp.ok) {
+                showAlert('success', 'Фото обновлено');
+                location.reload();
+            } else {
+                showAlert('danger', 'Ошибка загрузки фото');
+            }
+        } catch (e) {
+            showAlert('danger', 'Ошибка: ' + e.message);
+        }
+    }
+
+    async function deletePhoto() {
+        if (!confirm('Удалить фото?')) return;
+        try {
+            const resp = await fetch(`${API_BASE}/students/${STUDENT_ID}/photo`, {
+                method: 'DELETE'
+            });
+            if (resp.ok) {
+                showAlert('success', 'Фото удалено');
+                location.reload();
+            } else {
+                showAlert('danger', 'Ошибка удаления фото');
+            }
+        } catch (e) {
+            showAlert('danger', 'Ошибка: ' + e.message);
+        }
+    }
+
+    window.uploadPhoto = uploadPhoto;
+    window.deletePhoto = deletePhoto;
+
+    // ----------------------- ОБЩИЕ ----------------------------
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        return new Date(dateStr).toLocaleDateString('ru-RU');
+    }
+
+    function showAlert(type, message) {
+        const container = document.getElementById('alertContainer');
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.role = 'alert';
+        alert.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+        container.appendChild(alert);
+        setTimeout(() => alert.remove(), 5000);
+    }
+
+    // Глобальные функции, вызываемые из HTML
+    window.openCreateModal = openCreateModal;
+    window.editAchievement = editAchievement;
+    window.deleteAchievement = deleteAchievement;
+    window.openGradesModal = openGradesModal;
+    window.openEditModal = openEditModal;
+    window.addMilitaryUnit = addMilitaryUnit;
+    window.uploadPhoto = uploadPhoto;
+    window.deletePhoto = deletePhoto;
+    /*]]>*/
+</script>
+</body>
+</html>
